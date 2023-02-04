@@ -5,7 +5,7 @@
   	- name: Import VPC variables
   	  include_vars: vars/vpc_setup
 
-  	- name: Create 3T VPC
+  	- name: Create 3Tier VPC
       ec2_vpc_net:
         name: "{{vpc_name}}"
         cidr_block: "{{vpc_cidr}}"
