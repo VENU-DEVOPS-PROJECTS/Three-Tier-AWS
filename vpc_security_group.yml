@@ -20,7 +20,7 @@
         var: T3vpcout
     
     - name: port 80 sg for3 Tier
-      ec2_security_group:
+      ec2_group:
         name: "Sample SG"
         description: allow 80 from everywhere
         vpc_id: "{{T3vpcout.vpc.id}}"
