@@ -32,3 +32,17 @@
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
       register: TestSG_out
+    
+    - name: Create ec2 key for adding into launch templates
+      ec2_key:
+        name: T3-key
+        region: "{{region}}"
+      register: key_out
+
+
+    - name: Save private key into file bastion-key.pem
+      copy:
+        content: "{{key_out.key.private_key}}"
+        dest: "./T3-key.pem"
+        mode: 0600
+      when: key_out.changed
