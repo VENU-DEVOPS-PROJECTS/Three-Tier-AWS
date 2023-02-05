@@ -12,7 +12,7 @@ pubsub5cidr: "10.0.5.0/24"
 pubsub6cidr: "10.0.6.0/24"
 
 #Region
-region: "us-east-1"
+region: "us-east-2"
 
 #zone names
 zone1: "us-east-1a"
