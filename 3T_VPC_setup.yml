@@ -204,20 +204,6 @@
         - T3_NATGW_out.nat_gateway_id
         - T3_privRT_out.route_table.id
 
-    - set_fact:
-         vpcid: "{{T3vpcout.vpc.id}}"
-         pubsub1id: "{{T3pubsub1zone1web_out.subnet.id}}"
-         pubsub2id: "{{T3pubsub1zone2web_out.subnet.id}}"
-         pubsub3id: "{{T3pubsub3zone1app_out.subnet.id.subnet.id}}"
-         privsub1id: "{{T3pubsub4zone2app_out.subnet.id.subnet.id}}"
-         privsub2id: "{{T3pubsub5zone1db_out.subnet.id}}"
-         privsub3id: "{{T3pubsub6zone2db_out.subnet.id}}"
-         igwid: "{{T3_igw_out.gateway_id}}"
-         pubRTid: "{{T3_pubRT_out.route_table.id}}"
-         NATGWid: "{{T3_NATGW_out.nat_gateway_id}}"
-         privRTid: "{{T3_privRT_out.route_table.id}}"
-         cacheable: yes
-
     - name: create variables file for VPC output
       copy:
         content: "vpcid: {{T3vpcout.vpc.id}}\npubsub1id: {{T3pubsub1zone1web_out.subnet.id}}\npubsub2id: {{T3pubsub1zone2web_out.subnet.id}}\npubsub3id: {{T3pubsub3zone1app_out.subnet.id.subnet.id}}\nprivsub1id: {{T3pubsub4zone2app_out.subnet.id.subnet.id}}\nprivsub2id: {{T3pubsub5zone1db_out.subnet.id}}\nprivsub3id: {{T3pubsub6zone2db_out.subnet.id}}\nigwid: {{T3_igw_out.gateway_id}}\npubRTid: {{T3_pubRT_out.route_table.id}}\nNATGWid: {{T3_NATGW_out.nat_gateway_id}}\nprivRTid: {{T3_privRT_out.route_table.id}}\n"
