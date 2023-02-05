@@ -137,7 +137,49 @@
           - dest: 0.0.0.0/0
             gateway_id: "{{T3_NATGW_out.nat_gateway_id}}"
       register: T3_privRT_out
+      
+    - name: sg for 3 Tier public
+      ec2_group:
+        name: "T3-PUBLIC-SG"
+        description: allow 22,80,ICMP from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 80
+      register: T3PUBLICSG
 
+    - name: sg for 3 Tier APP
+      ec2_group:
+        name: "T3-APP-SG"
+        description: allow 22,ICMP from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: "{{T3PUBLICSG.id}}"
+            rule_desc: allow all on port 80
+      register: T3APPSG
+    
+    - name: Create ec2 key for adding into launch templates
+      ec2_key:
+        name: T3-key
+        region: "{{region}}"
+      register: key_out
+
+
+    - name: Save private key into file bastion-key.pem
+      copy:
+        content: "{{key_out.key.private_key}}"
+        dest: "./T3-key.pem"
+        mode: 0600
+      when: key_out.changed
+      
     - debug:
         var: "{{item}}"
       loop:
