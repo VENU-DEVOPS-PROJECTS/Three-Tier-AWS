@@ -18,6 +18,7 @@
       
     - debug:
         var: T3vpcout
+
     - name: sg for 3 Tier public
       ec2_group:
         name: "T3-PUBLIC-SG"
@@ -30,6 +31,13 @@
             to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
+          
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 22
+
       register: T3PUBLICSG
 
     - name: sg for 3 Tier APP
@@ -42,8 +50,9 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: "{{T3PUBLICSG.id}}"
+            group_id: "{{T3PUBLICSG.group_id}}"
             rule_desc: allow all on port 80
+
       register: T3APPSG
     
     
