@@ -15,7 +15,7 @@ pubsub6cidr: "10.0.6.0/24"
 region: "us-east-2"
 
 #zone names
-zone1: "us-east-1a"
-zone2: "us-east-1b"
+zone1: "us-east-2a"
+zone2: "us-east-2b"
 
 state: present
