@@ -85,7 +85,7 @@
         region: "{{region}}"
         az: "{{zone2}}"
         state: "{{state}}"
-        cidr: "{{pubsub4cidr}}"
+        cidr: "{{pubsub6cidr}}"
         map_public: yes
         resource_tags:
           Name: T3-DB-1b
