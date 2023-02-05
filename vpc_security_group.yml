@@ -18,3 +18,16 @@
       
     - debug:
         var: T3vpcout
+    
+    - name: example using security group rule descriptions
+      amazon.aws.ec2_security_group:
+        name: "Sample SG"
+        description: allow 80 from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            ports:
+            - 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 80
