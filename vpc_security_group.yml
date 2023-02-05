@@ -20,14 +20,15 @@
         var: T3vpcout
     
     - name: example using security group rule descriptions
-      ec2_security_group:
+      ec2_group:
         name: "Sample SG"
         description: allow 80 from everywhere
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         rules:
           - proto: tcp
-            ports:
-            - 80
+            from_port: 80
+            to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
+      register: TestSG_out
