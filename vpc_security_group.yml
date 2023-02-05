@@ -18,11 +18,10 @@
       
     - debug:
         var: T3vpcout
-    
-    - name: port 80 sg for3 Tier
+    - name: sg for 3 Tier public
       ec2_group:
-        name: "Sample SG"
-        description: allow 80 from everywhere
+        name: "T3-PUBLIC-SG"
+        description: allow 22,80,ICMP from everywhere
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         rules:
@@ -31,7 +30,22 @@
             to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
-      register: TestSG_out
+      register: T3PUBLICSG
+
+    - name: sg for 3 Tier APP
+      ec2_group:
+        name: "T3-APP-SG"
+        description: allow 22,ICMP from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: "{{T3PUBLICSG.id}}"
+            rule_desc: allow all on port 80
+      register: T3APPSG
+    
     
     - name: Create ec2 key for adding into launch templates
       ec2_key:
