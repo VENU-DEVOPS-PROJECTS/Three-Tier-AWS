@@ -31,19 +31,6 @@
             to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
-        rules:
-          - proto: tcp
-            from_port: 22
-            to_port: 22
-            cidr_ip: 0.0.0.0/0
-            rule_desc: allow all on port 22
-        rules:
-          - proto: ICMP
-            from_port: all
-            to_port: all
-            cidr_ip: 0.0.0.0/0
-            rule_desc: allow ICMP
-
       register: TestSG_out
     
     - name: Create ec2 key for adding into launch templates
