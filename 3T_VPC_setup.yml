@@ -31,7 +31,7 @@
           Name: T3-WEB-1a
       register: T3pubsub1zone1web_out
     
-    - name: create public subnet2 in zone2
+    - name: create public subnet2 for web in zone2
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
@@ -55,7 +55,7 @@
           Name: T3-APP-1a
       register: T3pubsub3zone1app_out
     
-    - name: create public subnet4 in zone2
+    - name: create public subnet4 for app in zone2
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
@@ -150,6 +150,13 @@
             to_port: 80
             cidr_ip: 0.0.0.0/0
             rule_desc: allow all on port 80
+          
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 22
+
       register: T3PUBLICSG
 
     - name: sg for 3 Tier APP
@@ -162,9 +169,11 @@
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: "{{T3PUBLICSG.id}}"
+            group_id: "{{T3PUBLICSG.group_id}}"
             rule_desc: allow all on port 80
+
       register: T3APPSG
+    
     
     - name: Create ec2 key for adding into launch templates
       ec2_key:
