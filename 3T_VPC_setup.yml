@@ -50,7 +50,7 @@
         az: "{{zone1}}"
         state: "{{state}}"
         cidr: "{{pubsub3cidr}}"
-        map_public: yes
+        map_public: no
         resource_tags:
           Name: T3-APP-1a
       register: T3pubsub3zone1app_out
@@ -62,7 +62,7 @@
         az: "{{zone2}}"
         state: "{{state}}"
         cidr: "{{pubsub4cidr}}"
-        map_public: yes
+        map_public: no
         resource_tags:
           Name: T3-APP-1b
       register: T3pubsub4zone2app_out
@@ -74,7 +74,7 @@
         az: "{{zone1}}"
         state: "{{state}}"
         cidr: "{{pubsub5cidr}}"
-        map_public: yes
+        map_public: no
         resource_tags:
           Name: T3-DB-1a
       register: T3pubsub5zone1db_out
@@ -86,7 +86,7 @@
         az: "{{zone2}}"
         state: "{{state}}"
         cidr: "{{pubsub6cidr}}"
-        map_public: yes
+        map_public: no
         resource_tags:
           Name: T3-DB-1b
       register: T3pubsub6zone2db_out
