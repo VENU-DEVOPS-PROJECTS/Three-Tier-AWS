@@ -1,0 +1,19 @@
+Building a 3-Tier Architecture in AWS
+
+Steps :
+1: Create the VPC
+2: Create and attach the Internet Gateway
+3: Create Public Subnets
+4: Create the NAT gateway
+5: Configure route tables
+-------------------------------------------------------> Ansible code developed till here to deploy VPC,Subnets,NAT GW,IGW,Route Tables.
+6: Build the web tier
+--> Create Launch templates
+--> Create Autoscaling group
+7: Build the App tier
+--> Create Launch templates
+--> Create Autoscaling group
+8: Build the Database
+9: Testing the environment
+
+Full documenatation here : https://aws.plainenglish.io/building-a-3-tier-architecture-in-aws-dfcb93047a19
