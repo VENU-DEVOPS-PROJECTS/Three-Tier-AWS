@@ -5,7 +5,7 @@
     - name: Import VPC variables
       include_vars: vars/vpc_setup
 
-    - name: Create T3ier VPC
+    - name: Create 3Tier VPC
       ec2_vpc_net:
         name: "{{vpc_name}}"
         cidr_block: "{{vpc_cidr}}"
@@ -19,7 +19,7 @@
     - debug:
         var: T3vpcout
         
-    - name: create public subnet1 for web in zone1
+    - name: create public subnet1 in zone1
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
@@ -28,8 +28,8 @@
         cidr: "{{pubsub1cidr}}"
         map_public: yes
         resource_tags:
-          Name: T3-WEB-1a
-      register: T3pubsub1zone1web_out
+          Name: pub1–3tier-arch
+      register: T3pubsub1zone1_out
     
     - name: create public subnet2 in zone2
       ec2_vpc_subnet:
@@ -40,63 +40,64 @@
         cidr: "{{pubsub2cidr}}"
         map_public: yes
         resource_tags:
-          Name: T3-WEB-1b
-      register: T3pubsub1zone2web_out
+          Name: pub2–3tier-arch
+      register: T3pubsub2zone2_out
 
-    - name: create public subnet3 for app in zone1
+    - name: create private subnet3 in zone1
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         az: "{{zone1}}"
         state: "{{state}}"
-        cidr: "{{pubsub3cidr}}"
-        map_public: yes
+        cidr: "{{privsub3cidr}}"
+        map_public: no
         resource_tags:
-          Name: T3-APP-1a
-      register: T3pubsub3zone1app_out
+          Name: priv3–3tier-arch
+      register: T3privsub3zone1_out
     
-    - name: create public subnet4 in zone2
+    - name: create private subnet4 in zone2
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         az: "{{zone2}}"
         state: "{{state}}"
-        cidr: "{{pubsub4cidr}}"
-        map_public: yes
+        cidr: "{{privsub4cidr}}"
+        map_public: no
         resource_tags:
-          Name: T3-APP-1b
-      register: T3pubsub4zone2app_out
+          Name: priv4–3tier-arch
+      register: T3privsub4zone2_out
 
-    - name: create public subnet5 for db in zone1
+    - name: create private subnet5 in zone1
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         az: "{{zone1}}"
         state: "{{state}}"
-        cidr: "{{pubsub5cidr}}"
+        cidr: "{{privsub5cidr}}"
         map_public: yes
         resource_tags:
-          Name: T3-DB-1a
-      register: T3pubsub5zone1db_out
+          Name: priv5–3tier-arch
+      register: T3privsub5zone1_out
     
-    - name: create public subnet6 for db in zone2
+    - name: create private subnet6 in zone1
       ec2_vpc_subnet:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         az: "{{zone2}}"
         state: "{{state}}"
-        cidr: "{{pubsub4cidr}}"
+        cidr: "{{privsub6cidr}}"
         map_public: yes
         resource_tags:
-          Name: T3-DB-1b
-      register: T3pubsub6zone2db_out
+          Name: priv6–3tier-arch
+      register: T3privsub6zone2_out
+      
     - name: Internet Gateway Setup
       ec2_vpc_igw:
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         state: "{{state}}"
         resource_tags:
-          Name: T3_IGW
+          Name: 3tier-arch-igw
       register: T3_igw_out
 
     - name: Setup Public Subnet Route Table
@@ -104,10 +105,10 @@
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         tags:
-          Name: T3-PUBLIC-RT
+          Name: my-public-RT
         subnets:
-          - "{{T3pubsub1zone1web_out.subnet.id}}"
-          - "{{T3pubsub1zone2web_out.subnet.id}}"
+          - "{{T3pubsub1zone1_out.subnet.id}}"
+          - "{{T3pubsub2zone2_out.subnet.id}}"
         routes:
           - dest: 0.0.0.0/0
             gateway_id: "{{T3_igw_out.gateway_id}}"
@@ -116,7 +117,7 @@
     - name: Create new NAT gateway fro T3 webapp
       ec2_vpc_nat_gateway:
         state: "{{state}}"
-        subnet_id: "{{T3pubsub1zone1web_out.subnet.id}}"
+        subnet_id: "{{T3pubsub1zone1_out.subnet.id}}"
         wait: yes
         region: "{{region}}"
         if_exist_do_not_create: true
@@ -127,12 +128,12 @@
         vpc_id: "{{T3vpcout.vpc.id}}"
         region: "{{region}}"
         tags:
-          Name: T3-PRIVATE-RT
+          Name: my-private-RT
         subnets:
-          - "{{T3pubsub3zone1app_out.subnet.id}}"
-          - "{{T3pubsub4zone2app_out.subnet.id}}"
-          - "{{T3pubsub5zone1db_out.subnet.id}}"
-          - "{{T3pubsub6zone2db_out.subnet.id}}"
+          - "{{T3privsub3zone1_out.subnet.id}}"
+          - "{{T3privsub4zone2_out.subnet.id}}"
+          - "{{T3privsub5zone1_out.subnet.id}}"
+          - "{{T3privsub6zone2_out.subnet.id}}"
         routes:
           - dest: 0.0.0.0/0
             gateway_id: "{{T3_NATGW_out.nat_gateway_id}}"
@@ -142,32 +143,18 @@
         var: "{{item}}"
       loop:
         - T3vpcout.vpc.id
-        - T3pubsub3zone1app_out.subnet.id
-        - T3pubsub4zone2app_out.subnet.id
-        - T3pubsub5zone1db_out.subnet.id
-        - T3pubsub6zone2db_out.subnet.id
-        - T3pubsub1zone1web_out.subnet.id
-        - T3pubsub1zone2web_out.subnet.id
+        - T3pubsub1zone1_out.subnet.id
+        - T3pubsub2zone2_out.subnet.id
+        - T3privsub3zone1_out.subnet.id
+        - T3privsub4zone2_out.subnet.id
+        - T3privsub5zone1_out.subnet.id
+        - T3privsub6zone2_out.subnet.id
         - T3_igw_out.gateway_id
         - T3_pubRT_out.route_table.id
         - T3_NATGW_out.nat_gateway_id
         - T3_privRT_out.route_table.id
 
-    - set_fact:
-         vpcid: "{{T3vpcout.vpc.id}}"
-         pubsub1id: "{{T3pubsub1zone1web_out.subnet.id}}"
-         pubsub2id: "{{T3pubsub1zone2web_out.subnet.id}}"
-         pubsub3id: "{{T3pubsub3zone1app_out.subnet.id.subnet.id}}"
-         privsub1id: "{{T3pubsub4zone2app_out.subnet.id.subnet.id}}"
-         privsub2id: "{{T3pubsub5zone1db_out.subnet.id}}"
-         privsub3id: "{{T3pubsub6zone2db_out.subnet.id}}"
-         igwid: "{{T3_igw_out.gateway_id}}"
-         pubRTid: "{{T3_pubRT_out.route_table.id}}"
-         NATGWid: "{{T3_NATGW_out.nat_gateway_id}}"
-         privRTid: "{{T3_privRT_out.route_table.id}}"
-         cacheable: yes
-
-    - name: create variables file for VPC output
+    - name: create variables file for 3Tier ARCH
       copy:
-        content: "vpcid: {{T3vpcout.vpc.id}}\npubsub1id: {{T3pubsub1zone1web_out.subnet.id}}\npubsub2id: {{T3pubsub1zone2web_out.subnet.id}}\npubsub3id: {{T3pubsub3zone1app_out.subnet.id.subnet.id}}\nprivsub1id: {{T3pubsub4zone2app_out.subnet.id.subnet.id}}\nprivsub2id: {{T3pubsub5zone1db_out.subnet.id}}\nprivsub3id: {{T3pubsub6zone2db_out.subnet.id}}\nigwid: {{T3_igw_out.gateway_id}}\npubRTid: {{T3_pubRT_out.route_table.id}}\nNATGWid: {{T3_NATGW_out.nat_gateway_id}}\nprivRTid: {{T3_privRT_out.route_table.id}}\n"
+        content: "vpcid: {{T3vpcout.vpc.id}}\npubsub1id: {{T3pubsub1zone1_out.subnet.id}}\npubsub2id: {{T3pubsub2zone2_out.subnet.id}}\nprivsub3id: {{T3privsub3zone1_out.subnet.id}}\nprivsub4id: {{T3privsub4zone2_out.subnet.id}}\nprivsub5id: {{T3privsub5zone1_out.subnet.id}}\nprivsub6id: {{T3privsub6zone2_out.subnet.id}\nigwid: {{T3_igw_out.gateway_id}}\npubRTid: {{T3_pubRT_out.route_table.id}}\nNATGWid: {{T3_NATGW_out.nat_gateway_id}}\nprivRTid: {{T3_privRT_out.route_table.id}}\n"
         dest: vars/output_vars
