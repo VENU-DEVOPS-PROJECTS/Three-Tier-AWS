@@ -16,4 +16,4 @@ Steps :
 8: Build the Database
 9: Testing the environment
 
-Full documenatation here : https://aws.plainenglish.io/building-a-3-tier-architecture-in-aws-dfcb93047a19
+Full documenatation here : https://medium.com/aws-in-plain-english/build-a-3-tier-architecture-via-aws-bcdce5909e52
