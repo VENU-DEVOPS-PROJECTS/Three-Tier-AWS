@@ -138,7 +138,69 @@
           - dest: 0.0.0.0/0
             gateway_id: "{{T3_NATGW_out.nat_gateway_id}}"
       register: T3_privRT_out
-      
+    
+    - name: sg for 3 Tier public
+      ec2_group:
+        name: "my3tierwebsg"
+        description: allow 22,80 from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 80
+          
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 22
+
+      register: my3tierwebsg
+
+    - name: sg for 3 Tier APP
+      ec2_group:
+        name: "apptiersg"
+        description: allow 22,ICMP from everywhere
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            group_id: "{{my3tierwebsg.group_id}}"
+            rule_desc: allow all on port 22
+          - proto: tcp
+            from_port: 3306
+            to_port: 3306
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 3306
+          
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all on port 80
+            
+      register: apptiersg
+    
+    
+    - name: Create ec2 key for adding into launch templates
+      ec2_key:
+        name: T3-key
+        region: "{{region}}"
+      register: key_out
+
+
+    - name: Save private key into file T3-key.pem
+      copy:
+        content: "{{key_out.key.private_key}}"
+        dest: "./T3-key.pem"
+        mode: 0600
+      when: key_out.changed
+    
     - name: Creating Auto Scaling Group for web tier 
       autoscaling_group:
         name: webtier-asg
