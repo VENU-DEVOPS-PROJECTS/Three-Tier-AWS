@@ -2,14 +2,20 @@
   connection: local
   gather_facts: False
   tasks:
-    - name: Create Launch Configuration
+    - name: Import VPC variables
+      include_vars: vars/vpc_setup
+      
+    - name: Import the tasks from 3T_VPC_setup.yml
+      import_tasks: 3T_VPC_setup.yml
+
+    - name: Create Launch Configuration for web tier
       ec2_lc:
         name: my-launch-config-test
         image_id: ami-0cc87e5027adcdca8
         instance_type: t2.micro
         key_name: T3-key
-        region: us-east-2
-        security_groups: sg-0494b465a156378b7
+        region: "{{region}}"
+        security_groups: "{{my3tierwebsg.group_id}}"
         user_data: |
           #!/bin/bash
           yum update -y
@@ -22,8 +28,8 @@
       ec2_asg:
         name: my-test-asg
         launch_config_name: my-launch-config-test
-        vpc_zone_identifier: subnet-01e91e0c8796dd3a7
+        vpc_zone_identifier: ["{{T3pubsub1zone1_out.subnet.id}}", "{{T3pubsub2zone2_out.subnet.id}}"]
         min_size: 2
         max_size: 4
         desired_capacity: 2
-        region: us-east-2
+        region: "{{region}}"
