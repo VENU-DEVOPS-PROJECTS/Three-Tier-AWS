@@ -1,0 +1,36 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: Create Launch Configuration
+    ec2_lc:
+      name: my-launch-config-test
+      image_id: ami-09f3bb43b9f607008
+      instance_type: t2.micro
+      key_name: T3-key
+      region: us-east-2
+      security_groups: ['apptiersg']
+      instance_monitoring: yes
+      user_data: |
+        #!/bin/bash
+        echo "Hello World!" > /tmp/hello.txt
+        #!/bin/bash
+        yum update -y
+        yum install -y httpd
+        systemctl enable httpd
+        systemctl start httpd
+
+        echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
+      wait: yes
+
+  - name: Create Auto Scaling Group
+    ec2_asg:
+      name: my-auto-scaling-group-test
+      launch_config_name: my-launch-config-test
+      min_size: 1
+      max_size: 2
+      vpc_zone_identifiers: ['subnet-0254c4eb1ae7755a6']
+      region: us-east-2
+      desired_capacity: 1
+      health_check_type: EC2
+      health_check_grace_period: 300
