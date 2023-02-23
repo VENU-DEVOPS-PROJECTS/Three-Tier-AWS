@@ -5,7 +5,7 @@
   - name: Create Launch Configuration
     ec2_lc:
       name: my-launch-config-test
-      image_id: ami-09f3bb43b9f607008
+      image_id: ami-0cc87e5027adcdca8
       instance_type: t2.micro
       key_name: T3-key
       region: us-east-2
