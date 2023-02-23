@@ -21,7 +21,6 @@
         systemctl start httpd
 
         echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
-      wait: yes
 
   - name: Create Auto Scaling Group
     ec2_asg:
@@ -29,7 +28,7 @@
       launch_config_name: my-launch-config-test
       min_size: 1
       max_size: 2
-      vpc_zone_identifier: ['subnet-0254c4eb1ae7755a6']
+      vpc_zone_identifiers: ['subnet-0254c4eb1ae7755a6']
       region: us-east-2
       desired_capacity: 1
       health_check_type: EC2
