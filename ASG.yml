@@ -28,8 +28,7 @@
       launch_config_name: my-launch-config-test
       min_size: 1
       max_size: 2
-      vpc_zone_identifiers: ['subnet-0254c4eb1ae7755a6']
+      vpc_zone_identifier: ['subnet-0254c4eb1ae7755a6']
       region: us-east-2
       desired_capacity: 1
       health_check_type: EC2
-      health_check_grace_period: 300
