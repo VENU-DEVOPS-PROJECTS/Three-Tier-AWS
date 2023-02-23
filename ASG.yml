@@ -26,3 +26,4 @@
         min_size: 2
         max_size: 4
         desired_capacity: 2
+        region: us-east-2
