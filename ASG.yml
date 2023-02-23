@@ -21,6 +21,7 @@
         systemctl start httpd
 
         echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
+      wait: yes
 
   - name: Create Auto Scaling Group
     ec2_asg:
