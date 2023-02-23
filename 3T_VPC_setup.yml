@@ -240,6 +240,9 @@
         name: apptier-asg
         launch_config_name: my-3-tier-launch-app
         vpc_zone_identifier: ["{{T3privsub3zone1_out.subnet.id}}", "{{T3privsub4zone2_out.subnet.id}}"]
+        min_size: 1
+        max_size: 1
+        desired_capacity: 1
         region: "{{region}}"
     
     - debug:
