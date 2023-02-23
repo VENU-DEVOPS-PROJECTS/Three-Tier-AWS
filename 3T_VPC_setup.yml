@@ -200,6 +200,16 @@
         dest: "./T3-key.pem"
         mode: 0600
       when: key_out.changed
+    
+    - name: Get private key ID of T3-key
+      stat:
+        path: "./T3-key.pem"
+        get_checksum: true
+      register: private_key_info
+
+    - name: Debug private key ID
+      debug:
+        var: private_key_info.stat.checksum
                 
     - debug:
         var: "{{item}}"
@@ -215,6 +225,7 @@
         - T3_pubRT_out.route_table.id
         - T3_NATGW_out.nat_gateway_id
         - T3_privRT_out.route_table.id
+        - private_key_info.stat.checksum
 
     - name: create variables file for 3Tier ARCH
       copy:
