@@ -12,8 +12,6 @@
       security_groups: 'apptiersg'
       user_data: |
         #!/bin/bash
-        echo "Hello World!" > /tmp/hello.txt
-        #!/bin/bash
         yum update -y
         yum install -y httpd
         systemctl enable httpd
