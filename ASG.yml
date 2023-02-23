@@ -17,3 +17,13 @@
           systemctl enable httpd
           systemctl start httpd
           echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
+    
+    - name: Create Auto Scaling Group
+      autoscaling:
+        state: present
+        name: my-test-asg
+        launch_config_name: my-launch-config-test
+        vpc_zone_identifier: subnet-01e91e0c8796dd3a7
+        min_size: 2
+        max_size: 4
+        desired_capacity: 2
