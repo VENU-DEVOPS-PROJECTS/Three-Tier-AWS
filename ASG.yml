@@ -9,7 +9,7 @@
       instance_type: t2.micro
       key_name: T3-key
       region: us-east-2
-      security_groups: 'apptiersg'
+      security_groups: sg-0494b465a156378b7
       user_data: |
         #!/bin/bash
         yum update -y
