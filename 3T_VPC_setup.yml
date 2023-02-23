@@ -193,13 +193,28 @@
         region: "{{region}}"
       register: key_out
 
-
     - name: Save private key into file T3-key.pem
       copy:
         content: "{{key_out.key.private_key}}"
         dest: "./T3-key.pem"
         mode: 0600
       when: key_out.changed
+    
+    - name: Create Launch Configuration for web tier
+      ec2_lc:
+        name: my-launch-config-test-need-to-delet-this
+        image_id: ami-0cc87e5027adcdca8
+        instance_type: t2.micro
+        key_name: T3-key
+        region: "{{region}}"
+        security_groups: "{{my3tierwebsg.group_id}}"
+        user_data: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl enable httpd
+          systemctl start httpd
+          echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
     
     - debug:
         var: "{{item}}"
