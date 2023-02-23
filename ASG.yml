@@ -19,8 +19,7 @@
           echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
     
     - name: Create Auto Scaling Group
-      autoscaling:
-        state: present
+      autoscaling_group:
         name: my-test-asg
         launch_config_name: my-launch-config-test
         vpc_zone_identifier: subnet-01e91e0c8796dd3a7
