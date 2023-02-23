@@ -201,16 +201,6 @@
         mode: 0600
       when: key_out.changed
     
-    - name: Get private key ID of T3-key
-      stat:
-        path: "./T3-key.pem"
-        get_checksum: true
-      register: private_key_info
-
-    - name: Debug private key ID
-      debug:
-        var: private_key_info.stat.checksum
-                
     - debug:
         var: "{{item}}"
       loop:
