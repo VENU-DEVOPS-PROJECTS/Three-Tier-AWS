@@ -186,6 +186,20 @@
             
       register: apptiersg
     
+    - name: rds database sg
+      ec2_group:
+        name: "database-sg"
+        description: allow 3306 from app tier
+        vpc_id: "{{T3vpcout.vpc.id}}"
+        region: "{{region}}"
+        rules:
+          - proto: tcp
+            from_port: 3306
+            to_port: 3306
+            group_id: "{{apptiersg.group_id}}"
+            rule_desc: allow 3306 from app tier sg
+          
+      register: my3tierdbsg
     
     - name: Create ec2 key for adding into launch templates
       ec2_key:
