@@ -6,13 +6,13 @@ Steps :
 3: Create Public Subnets
 4: Create the NAT gateway
 5: Configure route tables
--------------------------------------------------------> Ansible code developed till here to deploy VPC,Subnets,NAT GW,IGW,Route Tables.
 6: Build the web tier
 --> Create Launch templates
 --> Create Autoscaling group
 7: Build the App tier
 --> Create Launch templates
 --> Create Autoscaling group
+-------------------------------------------------------> Ansible code developed till here to deploy VPC,Subnets,NAT GW,IGW,Route Tables.
 8: Build the Database
 9: Testing the environment
 
