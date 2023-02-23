@@ -1,20 +1,19 @@
 - hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: False
   tasks:
-  - name: Create Launch Configuration
-    ec2_lc:
-      name: my-launch-config-test
-      image_id: ami-0cc87e5027adcdca8
-      instance_type: t2.micro
-      key_name: T3-key
-      region: us-east-2
-      security_groups: sg-0494b465a156378b7
-      user_data: |
-        #!/bin/bash
-        yum update -y
-        yum install -y httpd
-        systemctl enable httpd
-        systemctl start httpd
-
-        echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
+    - name: Create Launch Configuration
+      ec2_lc:
+        name: my-launch-config-test
+        image_id: ami-0cc87e5027adcdca8
+        instance_type: t2.micro
+        key_name: T3-key
+        region: us-east-2
+        security_groups: sg-0494b465a156378b7
+        user_data: |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl enable httpd
+          systemctl start httpd
+          echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
