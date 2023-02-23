@@ -19,7 +19,7 @@
           echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
     
     - name: Create Auto Scaling Group
-      autoscaling_group:
+      ec2_asg:
         name: my-test-asg
         launch_config_name: my-launch-config-test
         vpc_zone_identifier: subnet-01e91e0c8796dd3a7
