@@ -202,7 +202,7 @@
     
     - name: Create Launch Configuration for web tier
       ec2_lc:
-        name: my-launch-config-test-need-to-delet-this
+        name: my-3-tier-launch
         image_id: ami-0cc87e5027adcdca8
         instance_type: t2.micro
         key_name: T3-key
@@ -215,6 +215,16 @@
           systemctl enable httpd
           systemctl start httpd
           echo "<html><body><h1>Welcome to the web tier!</h1></body></html>" > /var/www/html/index.html
+    
+    - name: Create Launch Configuration for app tier
+      ec2_lc:
+        name: my-3-tier-launch-app
+        image_id: ami-0cc87e5027adcdca8
+        instance_type: t2.micro
+        key_name: T3-key
+        region: "{{region}}"
+        security_groups: "{{apptiersg.group_id}}"
+        
     
     - debug:
         var: "{{item}}"
