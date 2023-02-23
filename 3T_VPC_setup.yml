@@ -224,7 +224,23 @@
         key_name: T3-key
         region: "{{region}}"
         security_groups: "{{apptiersg.group_id}}"
+    
+    - name: Create Auto Scaling Group for web
+      ec2_asg:
+        name: webtier-asg
+        launch_config_name: my-3-tier-launch
+        vpc_zone_identifier: ["{{T3pubsub1zone1_out.subnet.id}}", "{{T3pubsub2zone2_out.subnet.id}}"]
+        min_size: 2
+        max_size: 2
+        desired_capacity: 2
+        region: "{{region}}"
         
+    - name: Create Auto Scaling Group for app
+      ec2_asg:
+        name: apptier-asg
+        launch_config_name: my-3-tier-launch-app
+        vpc_zone_identifier: ["{{T3privsub3zone1_out.subnet.id}}", "{{T3privsub4zone2_out.subnet.id}}"]
+        region: "{{region}}"
     
     - debug:
         var: "{{item}}"
